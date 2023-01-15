@@ -4,6 +4,7 @@ Copyright 2018, Ihor Melnyk
 */
 
 #include "OpenTherm.h"
+#include "esphome/core/log.h"
 
 OpenTherm::OpenTherm(int inPin, int outPin, bool isSlave):
         status(OpenThermStatus::NOT_INITIALIZED),
@@ -18,7 +19,7 @@ OpenTherm::OpenTherm(int inPin, int outPin, bool isSlave):
 {
 }
 
-void OpenTherm::begin(void(*handleInterruptCallback)(void), std::function<void(long unsigned int, OpenThermResponseStatus)> processResponseCallback)
+void OpenTherm::begin(void(*handleInterruptCallback)(void), std::function<void(unsigned long, OpenThermResponseStatus)> &&processResponseCallback)
 {
     pinMode(inPin, INPUT);
     pinMode(outPin, OUTPUT);
@@ -28,6 +29,7 @@ void OpenTherm::begin(void(*handleInterruptCallback)(void), std::function<void(l
     }
     activateBoiler();
     status = OpenThermStatus::READY;
+    esphome::ESP_LOGD("opentherm", "initialized");
     this->processResponseCallback = processResponseCallback;
 }
 
@@ -343,12 +345,12 @@ bool OpenTherm::isDiagnostic(unsigned long response) {
     return response & 0x40;
 }
 
-uint16_t OpenTherm::getUInt(const unsigned long response) const {
+uint16_t OpenTherm::getUInt(const unsigned long response) {
     const uint16_t u88 = response & 0xffff;
     return u88;
 }
 
-float OpenTherm::getFloat(const unsigned long response) const {
+float OpenTherm::getFloat(const unsigned long response) {
     const uint16_t u88 = getUInt(response);
     const float f = (u88 & 0x8000) ? -(0x10000L - u88) / 256.0f : u88 / 256.0f;
     return f;
@@ -405,4 +407,64 @@ float OpenTherm::getPressure() {
 
 unsigned char OpenTherm::getFault() {
     return ((sendRequest(buildRequest(OpenThermRequestType::READ, OpenThermMessageID::ASFflags, 0)) >> 8) & 0xff);
+}
+const char *OpenTherm::messageIdToString(OpenThermMessageID message_id) {
+    switch (message_id) {
+        case Status: return "Status:"; // flag8 / flag8  Master and Slave Status flags.
+            case TSet: return "TSet:"; // f8.8  Control setpoint  ie CH  water temperature setpoint (°C)
+            case MConfigMMemberIDcode: return "MConfigMMemberIDcode:"; // flag8 / u8  Master Configuration Flags /  Master MemberID Code
+            case SConfigSMemberIDcode: return "SConfigSMemberIDcode:"; // flag8 / u8  Slave Configuration Flags /  Slave MemberID Code
+            case Command: return "Command:"; // u8 / u8  Remote Command
+            case ASFflags: return "ASFflags:"; // / OEM-fault-code  flag8 / u8  Application-specific fault flags and OEM fault code
+            case RBPflags: return "RBPflags:"; // flag8 / flag8  Remote boiler parameter transfer-enable & read/write flags
+            case CoolingControl: return "CoolingControl:"; // f8.8  Cooling control signal (%)
+            case TsetCH2: return "TsetCH2:"; // f8.8  Control setpoint for 2e CH circuit (°C)
+            case TrOverride: return "TrOverride:"; // f8.8  Remote override room setpoint
+            case TSP: return "TSP:"; // u8 / u8  Number of Transparent-Slave-Parameters supported by slave
+            case TSPindexTSPvalue: return "TSPindexTSPvalue:"; // u8 / u8  Index number / Value of referred-to transparent slave parameter.
+            case FHBsize: return "FHBsize:"; // u8 / u8  Size of Fault-History-Buffer supported by slave
+            case FHBindexFHBvalue: return "FHBindexFHBvalue:"; // u8 / u8  Index number / Value of referred-to fault-history buffer entry.
+            case MaxRelModLevelSetting: return "MaxRelModLevelSetting:"; // f8.8  Maximum relative modulation level setting (%)
+            case MaxCapacityMinModLevel: return "MaxCapacityMinModLevel:"; // u8 / u8  Maximum boiler capacity (kW) / Minimum boiler modulation level(%)
+            case TrSet: return "TrSet:"; // f8.8  Room Setpoint (°C)
+            case RelModLevel: return "RelModLevel:"; // f8.8  Relative Modulation Level (%)
+            case CHPressure: return "CHPressure:"; // f8.8  Water pressure in CH circuit  (bar)
+            case DHWFlowRate: return "DHWFlowRate:"; // f8.8  Water flow rate in DHW circuit. (litres/minute)
+            case DayTime: return "DayTime:"; // special / u8  Day of Week and Time of Day
+            case Date: return "Date:"; // u8 / u8  Calendar date
+            case Year: return "Year:"; // u16  Calendar year
+            case TrSetCH2: return "TrSetCH2:"; // f8.8  Room Setpoint for 2nd CH circuit (°C)
+            case Tr: return "Tr:"; // f8.8  Room temperature (°C)
+            case Tboiler: return "Tboiler:"; // f8.8  Boiler flow water temperature (°C)
+            case Tdhw: return "Tdhw:"; // f8.8  DHW temperature (°C)
+            case Toutside: return "Toutside:"; // f8.8  Outside temperature (°C)
+            case Tret: return "Tret:"; // f8.8  Return water temperature (°C)
+            case Tstorage: return "Tstorage:"; // f8.8  Solar storage temperature (°C)
+            case Tcollector: return "Tcollector:"; // f8.8  Solar collector temperature (°C)
+            case TflowCH2: return "TflowCH2:"; // f8.8  Flow water temperature CH2 circuit (°C)
+            case Tdhw2: return "Tdhw2:"; // f8.8  Domestic hot water temperature 2 (°C)
+            case Texhaust: return "Texhaust:"; // s16  Boiler exhaust temperature (°C)
+            case TdhwSetUBTdhwSetLB: return "TdhwSetUBTdhwSetLB"; // s8 / s8  DHW setpoint upper & lower bounds for adjustment  (°C)
+            case MaxTSetUBMaxTSetLB: return "MaxTSetUBMaxTSetLB"; // s8 / s8  Max CH water setpoint upper & lower bounds for adjustment  (°C)
+            case HcratioUBHcratioLB: return "HcratioUBHcratioLB"; // s8 / s8  OTC heat curve ratio upper & lower bounds for adjustment
+            case TdhwSet: return "TdhwSet"; // f8.8  DHW setpoint (°C)    (Remote parameter 1)
+            case MaxTSet: return "MaxTSet:"; // f8.8  Max CH water setpoint (°C)  (Remote parameters 2)
+            case Hcratio: return "Hcratio:"; // f8.8  OTC heat curve ratio (°C)  (Remote parameter 3)
+            case RemoteOverrideFunction: return "RemoteOverrideFunction"; // flag8 / -  Function of manual and program changes in master and remote room setpoint.
+            case OEMDiagnosticCode: return "OEMDiagnosticCode"; // u16  OEM-specific diagnostic/service code
+            case BurnerStarts: return "BurnerStarts:"; // u16  Number of starts burner
+            case CHPumpStarts: return "CHPumpStarts:"; // u16  Number of starts CH pump
+            case DHWPumpValveStarts: return "DHWPumpValveStarts:"; // u16  Number of starts DHW pump/valve
+            case DHWBurnerStarts: return "DHWBurnerStarts:"; // u16  Number of starts burner during DHW mode
+            case BurnerOperationHours: return "BurnerOperationHours:"; // u16  Number of hours that burner is in operation (i.e. flame on)
+            case CHPumpOperationHours: return "CHPumpOperationHours:"; // u16  Number of hours that CH pump has been running
+            case DHWPumpValveOperationHours: return "DHWPumpValveOperationHours:"; // u16  Number of hours that DHW pump has been running or DHW valve has been opened
+            case DHWBurnerOperationHours: return "DHWBurnerOperationHours:"; // u16  Number of hours that burner is in operation during DHW mode
+            case OpenThermVersionMaster: return "OpenThermVersionMaster:"; // f8.8  The implemented version of the OpenTherm Protocol Specification in the master.
+            case OpenThermVersionSlave: return "OpenThermVersionSlave:"; // f8.8  The implemented version of the OpenTherm Protocol Specification in the slave.
+            case MasterVersion: return "MasterVersion:"; // u8 / u8  Master product version number and type
+            case SlaveVersion: return "SlaveVersion:"; // u8 / u8  Slave product version number and type
+            default:
+            return "Unknown message";
+    }
 }

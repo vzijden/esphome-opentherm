@@ -1,0 +1,81 @@
+esp32:
+  board: lolin_s2_mini
+  variant: esp32s2
+
+esphome:
+  name: opentherm-beta
+
+wifi:
+  ssid: 🤖
+  password: Internet$$
+
+logger:
+  baud_rate: 115200
+
+debug:
+  update_interval: 1s
+
+text_sensor:
+  - platform: debug
+    device:
+      name: "Device Info"
+    reset_reason:
+      name: "Reset Reason"
+
+api:
+ota:
+
+#output:
+#  - platform: opentherm
+#    opentherm_id: thermostat
+#    id: boiler_target_temp_output
+#    boiler_min_target_temp: 18°C
+#    boiler_max_target_temp: 85°C
+#    type: boiler_target_temperature
+#  - platform: opentherm
+#    type: central_heating_on
+#    opentherm_id: thermostat
+#    id: central_heating
+#  - platform: template
+#    type: float
+#    id: pid_output
+#    write_action:
+#      - output.set_level:
+#          id: boiler_target_temp_output
+#          level: !lambda return state;
+#      - if:
+#          condition:
+#              lambda: |-
+#                return state > 0.3;
+#          then:
+#            - output.turn_on: central_heating
+#          else:
+#            - output.turn_off: central_heating
+
+
+
+opentherm:
+  id: thermostat
+  slave_in_pin: 4 #D2
+  slave_out_pin: 5 #D1
+  master_in_pin: 12 #D6
+  master_out_pin: 14 #D5
+
+
+sensor:
+  - platform: opentherm
+    name: Room temperature
+    opentherm_id: thermostat
+    type: ROOM_TEMPERATURE
+    id: room_temperature
+
+#climate:
+#  - platform: pid
+#    name: Thermostaat
+#    default_target_temperature: 18°C
+#    sensor: room_temperature
+#    heat_output: pid_output
+#    control_parameters:
+#      kp: 0.49460
+#      ki: 0.00487
+#      kd: 12.56301
