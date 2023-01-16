@@ -1,31 +1,35 @@
 #pragma once
 
 #include "esphome/core/component.h"
-//#include "esphome/components/opentherm/OpenTherm.h"
-#include "esphome/components/sensor/sensor.h"
-#include "OpenThermSlave.h"
+#include "OpenTherm.h"
 
 namespace esphome::opentherm {
 
-class OpenThermMaster {
+class OpenThermMaster : public Component {
  private:
-  sensor::Sensor *boiler_temp_sensor_{nullptr};
-  sensor::Sensor *boiler_target_temp_sensor_{nullptr};
   int master_in_pin_{0};
   int master_out_pin_{0};
 
  public:
-  OpenThermMaster(int master_in_pin, int master_out_pin);
-//  void handle_interrupt() const;
+  void set_master_in_pin(int master_in_pin);
+  void set_master_out_pin(int master_out_pin);
+
+ private:
+  bool heating_on_;
+  bool DHW_on_;
+
+ public:
+  void setup() override;
 
   void set_target_temperature(float temperature) const;
   uint32_t handle_thermostat_request(uint32_t request);
+  uint32_t send_request_to_boiler_(uint32_t request) const;
 
-  unsigned long send_request_to_boiler_(uint32_t request) const;
-  void set_heating_on(bool heating_on);
-  void set_domestic_hot_water_on(bool domestic_hot_water_on);
-  void set_max_relative_modulation_level(unsigned int max_modulation_level);
-  char getStatus();
+  void set_heating(bool heating_on);
+  void set_dhw(bool dhw_on);
+
+ private:
+  void update_status();
 };
 
 }  // namespace esphome::opentherm

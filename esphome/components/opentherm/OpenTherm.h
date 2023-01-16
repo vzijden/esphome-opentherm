@@ -145,7 +145,7 @@ public:
 
     //responses
     bool isFault(unsigned long response);
-    bool isCentralHeatingActive(unsigned long response);
+    static bool isCentralHeatingActive(unsigned long response);
     static bool isHotWaterActive(unsigned long response);
     static bool isFlameOn(unsigned long response);
     bool isCoolingActive(unsigned long response);

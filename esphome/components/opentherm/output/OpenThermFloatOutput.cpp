@@ -11,7 +11,7 @@ float OpenThermFloatOutput::map_to_temperature_range(float state) const {
 }
 
 void OpenThermFloatOutput::write_state(float state) {
-  open_therm_gateway_->send_write_to_boiler(TSet, OpenTherm::temperatureToData(state));
+//  open_therm_master_->send_write_to_boiler(TSet, OpenTherm::temperatureToData(state));
 }
 void OpenThermFloatOutput::set_max_temperature(char max_temperature) { max_temperature_ = max_temperature; }
 void OpenThermFloatOutput::set_min_temperature(char min_temperature) { min_temperature_ = min_temperature; }

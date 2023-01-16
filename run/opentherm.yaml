@@ -19,97 +19,23 @@ logger:
 api:
 ota:
 
+opentherm:
+  id: thermostat
+
+
 output:
   - platform: opentherm
     opentherm_id: thermostat
-    id: boiler_target_temp_output
-    boiler_min_target_temp: 18°C
-    boiler_max_target_temp: 85°C
+    type: heating
+    id: heating
+  - platform: opentherm
+    opentherm_id: thermostat
+    type: hot_water
+    id: hot_water
+  - platform: opentherm
+    opentherm_id: thermostat
     type: boiler_target_temperature
-  - platform: opentherm
-    type: central_heating_on
-    opentherm_id: thermostat
-    id: central_heating
-  - platform: template
-    type: float
-    id: pid_output
-    write_action:
-      - output.set_level:
-          id: boiler_target_temp_output
-          level: !lambda return state;
-      - if:
-          condition:
-              lambda: |-
-                return state > 0.3;
-          then:
-            - output.turn_on: central_heating
-          else:
-            - output.turn_off: central_heating
+    boiler_max_target_temp: 85
+    boiler_min_target_temp: 55
+    id: boiler_target_temperature
 
-switch:
-  - platform: opentherm
-    name: Gateway mode
-    opentherm_id: thermostat
-    type: gateway_mode
-    id: gateway_mode_switch
-  - platform: opentherm
-    name: Heating on
-    opentherm_id: thermostat
-    type: heating_override_on
-    id: heating_on
-  - platform: opentherm
-    name: Hot water on
-    opentherm_id: thermostat
-    type: dhw_on
-    id: dhw_on
-
-
-opentherm:
-  id: thermostat
-  slave_in_pin: 4 #D2
-  slave_out_pin: 5 #D1
-  master_in_pin: 12 #D6
-  master_out_pin: 14 #D5
-
-binary_sensor:
-  - platform: opentherm
-    opentherm_id: thermostat
-    type: flame_on
-    name: FLame on
-  - platform: opentherm
-    opentherm_id: thermostat
-    type: heating_on
-    name: Heating on
-
-sensor:
-  - platform: opentherm
-    name: Room temperature
-    opentherm_id: thermostat
-    type: ROOM_TEMPERATURE
-    id: room_temperature
-  - platform: opentherm
-    name: Boiler water temperature
-    opentherm_id: thermostat
-    type: BOILER_TEMPERATURE
-    id: BOILER_temperature
-  - platform: opentherm
-    name: Boiler return water temperature
-    opentherm_id: thermostat
-    type: BOILER_RETURN_TEMPERATURE
-    id: BOILER_RETURN_temperature
-  - platform: opentherm
-    name: Boiler target water temperature
-    opentherm_id: thermostat
-    type: BOILER_TARGET_TEMPERATURE
-    id: BOILER_TARGET_TEMPERATURE
-
-climate:
-  - platform: pid
-    name: Thermostaat
-    default_target_temperature: 18°C
-    sensor: room_temperature
-    heat_output: pid_output
-    control_parameters:
-      kp: 0.49460
-      ki: 0.00487
-      kd: 0
