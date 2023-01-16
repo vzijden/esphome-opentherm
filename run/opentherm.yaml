@@ -39,3 +39,13 @@ output:
     boiler_min_target_temp: 55
     id: boiler_target_temperature
 
+
+sensor:
+  - platform: opentherm
+    type: boiler_temperature
+    opentherm_id: thermostat
+    name: Boiler water temperature
+  - platform: opentherm
+    type: boiler_return_temperature
+    opentherm_id: thermostat
+    name: Boiler water return temperature
