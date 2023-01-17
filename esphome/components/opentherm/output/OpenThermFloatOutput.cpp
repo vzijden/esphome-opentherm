@@ -3,17 +3,20 @@
 //
 
 #include "OpenThermFloatOutput.h"
+#include "esphome/core/log.h"
 
 namespace esphome::opentherm {
 
-float OpenThermFloatOutput::map_to_temperature_range(float state) const {
-  return min_temperature_ + (max_temperature_ - min_temperature_) * state;
-}
-
 void OpenThermFloatOutput::write_state(float state) {
-//  open_therm_master_->send_write_to_boiler(TSet, OpenTherm::temperatureToData(state));
-}
-void OpenThermFloatOutput::set_max_temperature(char max_temperature) { max_temperature_ = max_temperature; }
-void OpenThermFloatOutput::set_min_temperature(char min_temperature) { min_temperature_ = min_temperature; }
+  unsigned int data = OpenTherm::temperatureToData(state);
+  unsigned long temp = OpenTherm::buildRequest(WRITE_DATA, TSet, data);
+  ESP_LOGD("opentherm.floatOutput", "Setting boiler temp to %u", data);
+  open_therm_master_->send_request_to_boiler_(temp);
 
+}
+void OpenThermFloatOutput::setup() {
+//  open_therm_master_->send_request_to_boiler_(
+//      OpenTherm::buildRequest(WRITE, TSet, OpenTherm::temperatureToData(gets)));
+}
 }  // namespace esphome::opentherm
+   // namespace esphome::opentherm

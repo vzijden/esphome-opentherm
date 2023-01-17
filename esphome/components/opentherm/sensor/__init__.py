@@ -18,12 +18,13 @@ OpenThermSensorType = opentherm_ns.enum("OpenThermSensorType")
 SENSOR_TYPES = {
     "boiler_temperature": [OpenThermSensorType.BOILER_TEMPERATURE],
     "boiler_return_temperature": [OpenThermSensorType.BOILER_RETURN_TEMPERATURE],
+    "relative_modulation_level": [OpenThermSensorType.BOILER_RELATIVE_MODULATION_LEVEL],
+    "target_water_temperature": [OpenThermSensorType.BOILER_TARGET_TEMPERATURE],
 }
 
 CONFIG_SCHEMA = (
     sensor.sensor_schema(
         OpenThermSensor,
-        unit_of_measurement=UNIT_CELSIUS,
         icon=ICON_THERMOMETER,
         accuracy_decimals=1,
         state_class=STATE_CLASS_MEASUREMENT,

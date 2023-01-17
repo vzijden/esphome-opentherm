@@ -13,9 +13,16 @@ void OpenThermSensor::update() {
     case BOILER_RETURN_TEMPERATURE:
       publish_state(read_from_boiler(Tret));
       break;
+    case BOILER_RELATIVE_MODULATION_LEVEL:
+      publish_state(read_from_boiler(RelModLevel));
+      break;
+    case BOILER_TARGET_TEMPERATURE:
+      publish_state(read_from_boiler(TSet));
+      break;
   }
 }
 OpenThermSensor::OpenThermSensor() : PollingComponent(30000) {}
+
 float OpenThermSensor::read_from_boiler(OpenThermMessageID message_id) {
   return OpenTherm::getFloat(open_therm_master_->send_request_to_boiler_(OpenTherm::buildRequest(READ, message_id, 0)));
 }

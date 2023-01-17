@@ -5,7 +5,9 @@
 #include "esphome/components/opentherm/OpenThermMaster.h"
 namespace esphome::opentherm {
 
-enum OpenThermSensorType { BOILER_TEMPERATURE, BOILER_RETURN_TEMPERATURE };
+enum OpenThermSensorType { BOILER_TEMPERATURE, BOILER_RETURN_TEMPERATURE, BOILER_RELATIVE_MODULATION_LEVEL,
+  BOILER_TARGET_TEMPERATURE
+};
 
 class OpenThermSensor : public sensor::Sensor, public PollingComponent {
  public:

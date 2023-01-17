@@ -27,8 +27,6 @@ CONFIG_SCHEMA = cv.typed_schema(
             {
                 cv.GenerateID(CONF_OPENTHERM_GATEWAY_ID): cv.use_id(OpenThermMaster),
                 cv.Required(CONF_ID): cv.declare_id(OpenThermFloatOutput),
-                cv.Optional(CONF_BOILER_MAX_TARGET_TEMP): cv.temperature,
-                cv.Optional(CONF_BOILER_MIN_TARGET_TEMP): cv.temperature,
             }
         ),
         CONF_TYPE_HEATING: output.BINARY_OUTPUT_SCHEMA.extend(
@@ -52,9 +50,6 @@ async def to_code(config):
 
     var = cg.new_Pvariable(config[CONF_ID])
     cg.add(var.set_open_therm_master(parent))
-    if config[CONF_TYPE] == CONF_TYPE_BOILER_TARGET_TEMPERATURE:
-        cg.add(var.set_max_temperature(config[CONF_BOILER_MAX_TARGET_TEMP]))
-        cg.add(var.set_min_temperature(config[CONF_BOILER_MIN_TARGET_TEMP]))
 
     if config[CONF_TYPE] == CONF_TYPE_HEATING:
         cg.add(var.set_type(OpenThermBinaryOutputType.HEATING))

@@ -23,13 +23,12 @@ class OpenThermMaster : public Component {
 
   void set_target_temperature(float temperature) const;
   uint32_t handle_thermostat_request(uint32_t request);
-  uint32_t send_request_to_boiler_(uint32_t request) const;
+  uint32_t send_request_to_boiler_(unsigned long) const;
 
   void set_heating(bool heating_on);
   void set_dhw(bool dhw_on);
+  uint32_t update_status();
 
- private:
-  void update_status();
 };
 
 }  // namespace esphome::opentherm

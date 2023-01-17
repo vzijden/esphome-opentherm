@@ -35,17 +35,55 @@ output:
   - platform: opentherm
     opentherm_id: thermostat
     type: boiler_target_temperature
-    boiler_max_target_temp: 85
-    boiler_min_target_temp: 55
     id: boiler_target_temperature
 
+switch:
+  - platform: output
+    name: Verwarming aan
+    output: heating
+  - platform: output
+    name: Warm water aan
+    output: hot_water
+
+number:
+  - platform: template
+    name: Boiler doel temperatuur
+    step: 1
+    restore_value: true
+    unit_of_measurement: °C
+    min_value: 0.55
+    max_value: 85
+    optimistic: true
+    set_action:
+      then:
+        - lambda: |-
+            return id(boiler_target_temperature).write_state(x);
 
 sensor:
   - platform: opentherm
     type: boiler_temperature
     opentherm_id: thermostat
     name: Boiler water temperature
+    unit_of_measurement: °C
   - platform: opentherm
     type: boiler_return_temperature
     opentherm_id: thermostat
+    unit_of_measurement: °C
     name: Boiler water return temperature
+  - platform: opentherm
+    type: relative_modulation_level
+    unit_of_measurement: "%"
+    opentherm_id: thermostat
+    name: Boiler relative modulation level
+  - platform: opentherm
+    type: target_water_temperature
+    opentherm_id: thermostat
+    unit_of_measurement: °C
+    name: Boiler water target temperature
+
+
+binary_sensor:
+  - platform: opentherm
+    type: flame_on
+    name: Flame on
+    opentherm_id: thermostat

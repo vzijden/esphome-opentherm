@@ -19,7 +19,8 @@ void OpenThermMaster::set_target_temperature(float temperature) const {
   send_request_to_boiler_(request);
 }
 
-uint32_t OpenThermMaster::send_request_to_boiler_(uint32_t request) const {
+uint32_t OpenThermMaster::send_request_to_boiler_(unsigned long request) const {
+  ESP_LOGD("opentherm.master", "Sending request to boiler %s", OpenTherm::messageIdToString(OpenTherm::getDataID(request)));
   auto response = to_boiler.sendRequest(request);
   auto response_type = OpenTherm::getMessageType(response);
   if (response_type != WRITE_ACK && response_type != READ_ACK) {
@@ -39,7 +40,7 @@ void OpenThermMaster::set_heating(bool heating_on) {
   heating_on_ = heating_on;
   update_status();
 }
-void OpenThermMaster::update_status() { to_boiler.setBoilerStatus(heating_on_, DHW_on_); }
+uint32_t OpenThermMaster::update_status() { return to_boiler.setBoilerStatus(heating_on_, DHW_on_); }
 void OpenThermMaster::set_master_in_pin(int master_in_pin) { master_in_pin_ = master_in_pin; }
 void OpenThermMaster::set_master_out_pin(int master_out_pin) { master_out_pin_ = master_out_pin; }
 

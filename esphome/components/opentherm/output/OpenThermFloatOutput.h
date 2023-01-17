@@ -15,8 +15,7 @@ class OpenThermFloatOutput : public output::FloatOutput, public Component {
   void write_state(float state) override;
   void set_open_therm_master(OpenThermMaster *open_therm_master) { this->open_therm_master_ = open_therm_master; }
   float map_to_temperature_range(float state) const;
-  void set_max_temperature(char max_temperature);
-  void set_min_temperature(char min_temperature);
+  void setup() override;
 };
 
 }  // namespace esphome::opentherm
