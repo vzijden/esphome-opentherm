@@ -87,4 +87,7 @@ void OpenThermGateway::set_temperature_setpoint_override(float temperature) {
 
 }
 void OpenThermGateway::loop() { to_thermostat.process(); }
+void OpenThermGateway::add_listener(OpenThermListener *listener) { listeners.push_back(listener); }
+
+uint32_t OpenThermGateway::send_request_to_thermostat(uint32_t request) { return to_thermostat.sendRequest(request); }
 }  // namespace esphome::opentherm

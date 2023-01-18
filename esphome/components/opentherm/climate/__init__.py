@@ -25,3 +25,4 @@ async def to_code(config):
     cg.add(var.set_open_therm_gateway(parent))
 
     await climate.register_climate(var, config)
+    await cg.register_component(var, config)
