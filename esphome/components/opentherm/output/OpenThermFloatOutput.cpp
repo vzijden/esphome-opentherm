@@ -15,7 +15,7 @@ void OpenThermFloatOutput::write_state(float state) {
 
 }
 void OpenThermFloatOutput::setup() {
-//  open_therm_master_->send_request_to_boiler_(
+//  open_therm_gateway_->send_request_to_boiler_(
 //      OpenTherm::buildRequest(WRITE, TSet, OpenTherm::temperatureToData(gets)));
 }
 }  // namespace esphome::opentherm

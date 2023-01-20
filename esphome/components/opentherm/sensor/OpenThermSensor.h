@@ -2,14 +2,15 @@
 
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/opentherm/OpenThermListener.h"
-#include "esphome/components/opentherm/OpenThermMaster.h"
+#include "../OpenTherm.h"
+#include "../OpenThermGateway.h"
 namespace esphome::opentherm {
 
 enum OpenThermSensorType { BOILER_TEMPERATURE, BOILER_RETURN_TEMPERATURE, BOILER_RELATIVE_MODULATION_LEVEL,
-  BOILER_TARGET_TEMPERATURE
+  BOILER_TARGET_TEMPERATURE, MAX_RELATIVE_MODULATION_LEVEL
 };
 
-class OpenThermSensor : public sensor::Sensor, public PollingComponent {
+class OpenThermSensor : public sensor::Sensor, public PollingComponent, public OpenThermListener {
  public:
   void setup() override;
   void dump_config() override;
@@ -19,16 +20,16 @@ class OpenThermSensor : public sensor::Sensor, public PollingComponent {
 
  private:
   OpenThermSensorType sensor_type_;
-  OpenThermMaster *open_therm_master_;
+  OpenThermGateway *open_therm_gateway_;
+  bool is_message_for_sensor_type(OpenThermMessageID message_id, OpenThermMessageType response_type);
+  uint32_t send_request_to_boiler(OpenThermMessageID message_id);
 
  public:
-  void set_open_therm_master(OpenThermMaster *open_therm_master) {
-    OpenThermSensor::open_therm_master_ = open_therm_master;
+  void set_open_therm_gateway(OpenThermGateway *open_therm_gateway) {
+    OpenThermSensor::open_therm_gateway_ = open_therm_gateway;
   }
   void update() override;
-
- private:
-  float read_from_boiler(OpenThermMessageID message_id);
+  void on_response(uint32_t request, uint32_t response) override;
 };
 
 }  // namespace esphome::opentherm

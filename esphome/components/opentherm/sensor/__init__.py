@@ -1,7 +1,7 @@
 import esphome.config_validation as cv
 import esphome.codegen as cg
 from esphome.components import sensor
-from .. import opentherm_ns, OpenThermMaster
+from .. import opentherm_ns, OpenThermGateway
 from esphome.const import (
     STATE_CLASS_MEASUREMENT,
     ICON_THERMOMETER,
@@ -20,6 +20,9 @@ SENSOR_TYPES = {
     "boiler_return_temperature": [OpenThermSensorType.BOILER_RETURN_TEMPERATURE],
     "relative_modulation_level": [OpenThermSensorType.BOILER_RELATIVE_MODULATION_LEVEL],
     "target_water_temperature": [OpenThermSensorType.BOILER_TARGET_TEMPERATURE],
+    "maximum_relative_modulation_level": [
+        OpenThermSensorType.MAX_RELATIVE_MODULATION_LEVEL
+    ],
 }
 
 CONFIG_SCHEMA = (
@@ -31,7 +34,7 @@ CONFIG_SCHEMA = (
     )
     .extend(
         {
-            cv.GenerateID(CONF_OPENTHERM_SENSOR_ID): cv.use_id(OpenThermMaster),
+            cv.GenerateID(CONF_OPENTHERM_SENSOR_ID): cv.use_id(OpenThermGateway),
             cv.Required(CONF_OPENTHERM_SENSOR_TYPE): cv.enum(SENSOR_TYPES),
         }
     )
@@ -45,4 +48,4 @@ async def to_code(config):
     await cg.register_component(var, config)
 
     cg.add(var.set_sensor_type(config[CONF_OPENTHERM_SENSOR_TYPE]))
-    cg.add(var.set_open_therm_master(parent))
+    cg.add(var.set_open_therm_gateway(parent))

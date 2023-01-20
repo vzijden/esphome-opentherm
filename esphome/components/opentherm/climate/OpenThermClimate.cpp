@@ -16,7 +16,7 @@ void esphome::opentherm::OpenThermClimate::control(const esphome::climate::Clima
 void esphome::opentherm::OpenThermClimate::on_response(uint32_t request, uint32_t response) {
   if (OpenTherm::getDataID(request) == Status) {
     if (OpenTherm::isCentralHeatingActive(response)) {
-      ESP_LOGD(TAG, "Intercepted status request, setting HEATING");
+      ESP_LOGI(TAG, "Intercepted status request, setting HEATING");
       this->action = climate::CLIMATE_ACTION_HEATING;
     } else {
       ESP_LOGD(TAG, "Intercepted status request, setting IDLE");
@@ -26,14 +26,14 @@ void esphome::opentherm::OpenThermClimate::on_response(uint32_t request, uint32_
   }
 
   if (OpenTherm::getDataID(request) == Tr) {
-    ESP_LOGD(TAG, "intercepted request for room temperature");
+    ESP_LOGI(TAG, "intercepted request for room temperature");
     float temp = OpenTherm::getFloat(response);
     this->current_temperature = temp;
     this->publish_state();
   }
 
   if (OpenTherm::getDataID(request) == TrSet) {
-    ESP_LOGD(TAG, "intercepted request for setpoint");
+    ESP_LOGI(TAG, "intercepted request for TrSet");
     float temp = OpenTherm::getFloat(response);
     this->target_temperature = temp;
     this->publish_state();

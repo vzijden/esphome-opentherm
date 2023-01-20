@@ -47,29 +47,29 @@ void OpenThermGateway::handle_thermostat_request(uint32_t request, OpenThermResp
 
       double time_since_rest = difftime(now, wait_override_reset);
       if (time_since_rest < 90) {
-        ESP_LOGD(TAG, "It has been %f seconds since the override reset, returning 0", time_since_rest);
+        ESP_LOGI(TAG, "It has been %f seconds since the override reset, returning 0", time_since_rest);
       } else {
-        ESP_LOGD(TAG, "It has been %f seconds since the override reset. Thermostat should have been reset.",
+        ESP_LOGI(TAG, "It has been %f seconds since the override reset. Thermostat should have been reset.",
                  time_since_rest);
         wait_override_reset = 0;
         temperature_override_already_set = false;
       }
       response = OpenTherm::buildResponse(READ_ACK, TrOverride, OpenTherm::temperatureToData(0));
     } else {
-      ESP_LOGD(TAG, "Returning override setpoint %f", temperature_override_);
+      ESP_LOGI(TAG, "Returning override setpoint %f", temperature_override_);
       response = OpenTherm::buildResponse(READ_ACK, TrOverride, OpenTherm::temperatureToData(temperature_override_));
     }
 
-  } else if (message_id == RemoteOverrideFunction) {
-    unsigned int data = true;
-    data <<= 8;
-    response = OpenTherm::buildResponse(READ_ACK, RemoteOverrideFunction, data);
+//  } else if (message_id == RemoteOverrideFunction && message_type == READ_DATA) {
+//    unsigned int data = true;
+//    data <<= 8;
+//    response = OpenTherm::buildResponse(READ_ACK, RemoteOverrideFunction, data);
   } else {
     response = to_boiler.sendRequest(request);
   }
 
-//   ESP_LOGD(TAG, "Responding with %s %s %f", OpenTherm::messageTypeToString(OpenTherm::getMessageType(response)),
-//            OpenTherm::messageIdToString(message_id), OpenTherm::getFloat(response));
+   ESP_LOGD(TAG, "Responding with %s %s %f", OpenTherm::messageTypeToString(OpenTherm::getMessageType(response)),
+            OpenTherm::messageIdToString(message_id), OpenTherm::getFloat(response));
 
   for (const auto &listener : listeners) {
     listener->on_response(request, response);
@@ -80,9 +80,7 @@ void OpenThermGateway::handle_thermostat_request(uint32_t request, OpenThermResp
 void OpenThermGateway::update() {}
 
 void OpenThermGateway::set_temperature_setpoint_override(float temperature) {
-  if (temperature_override_ > 0) {
-    temperature_override_already_set = true;
-  }
+  temperature_override_already_set = true;
   temperature_override_ = temperature;
 
 }
@@ -90,4 +88,14 @@ void OpenThermGateway::loop() { to_thermostat.process(); }
 void OpenThermGateway::add_listener(OpenThermListener *listener) { listeners.push_back(listener); }
 
 uint32_t OpenThermGateway::send_request_to_thermostat(uint32_t request) { return to_thermostat.sendRequest(request); }
+
+uint32_t OpenThermGateway::send_request_to_boiler(uint32_t request) {
+  uint32_t response = to_boiler.sendRequest(request);
+  if (OpenTherm::getMessageType(response) == DATA_INVALID || OpenTherm::getMessageType(response) == UNKNOWN_DATA_ID) {
+    ESP_LOGW(TAG, "Got response %s from boiler to request %s",
+             OpenTherm::messageTypeToString(OpenTherm::getMessageType(response)),
+             OpenTherm::messageIdToString(OpenTherm::getDataID(response)));
+  }
+  return response;
+}
 }  // namespace esphome::opentherm

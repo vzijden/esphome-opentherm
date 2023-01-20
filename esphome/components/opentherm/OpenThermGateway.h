@@ -9,6 +9,7 @@ class OpenThermGateway : public PollingComponent {
   std::vector<OpenThermListener *> listeners{std::vector<OpenThermListener *>()};
   float temperature_override_;
   time_t wait_override_reset = 0;
+  bool override_active;
 
  public:
   void update() override;
@@ -24,5 +25,6 @@ class OpenThermGateway : public PollingComponent {
   void loop() override;
   void setup() override;
   uint32_t send_request_to_thermostat(uint32_t request);
+  uint32_t send_request_to_boiler(uint32_t request);
 };
 }  // namespace esphome::opentherm

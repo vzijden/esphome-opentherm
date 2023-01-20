@@ -31,3 +31,30 @@ climate:
     visual:
       temperature_step: 0.5
       min_temperature: 15
+
+sensor:
+  - platform: opentherm
+    type: boiler_temperature
+    opentherm_id: thermostat
+    name: Boiler water temperature
+    unit_of_measurement: °C
+  - platform: opentherm
+    type: boiler_return_temperature
+    opentherm_id: thermostat
+    unit_of_measurement: °C
+    name: Boiler water return temperature
+  - platform: opentherm
+    type: relative_modulation_level
+    opentherm_id: thermostat
+    unit_of_measurement: "%"
+    name: Boiler relative modulation level
+  - platform: opentherm
+    type: maximum_relative_modulation_level
+    opentherm_id: thermostat
+    unit_of_measurement: "%"
+    name: Boiler maximum relative modulation level setting
+  - platform: opentherm
+    type: target_water_temperature
+    opentherm_id: thermostat
+    unit_of_measurement: °C
+    name: Boiler target water temperature
