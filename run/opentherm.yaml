@@ -58,3 +58,9 @@ sensor:
     opentherm_id: thermostat
     unit_of_measurement: °C
     name: Boiler target water temperature
+
+switch:
+  - platform: opentherm
+    opentherm_id: thermostat
+    type: boiler_override
+    name: Boiler on override
