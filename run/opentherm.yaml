@@ -5,13 +5,9 @@ esphome:
   name: opentherm
 
 wifi:
-  ssid: Internet
-  password: Internet$$
-  manual_ip:
-    static_ip: 192.168.0.122
-    gateway: 192.168.0.1
-    subnet: 255.255.255.0
-    dns1: 192.168.0.1
+  ssid: Wifi
+  password: TollieBollie!@
+  domain: .lan
 
 logger:
   baud_rate: 9600
@@ -64,3 +60,13 @@ switch:
     opentherm_id: thermostat
     type: boiler_override
     name: Boiler on override
+
+binary_sensor:
+  - platform: opentherm
+    opentherm_id: thermostat
+    type: flame_on
+    name: Boiler flame on
+  - platform: opentherm
+    opentherm_id: thermostat
+    type: thermostat_heating_on
+    name: Thermostat heating active

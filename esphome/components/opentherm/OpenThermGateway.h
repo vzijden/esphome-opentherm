@@ -3,7 +3,9 @@
 #include "esphome/core/component.h"
 #include "OpenThermListener.h"
 #include "OpenTherm.h"
+
 namespace esphome::opentherm {
+
 class OpenThermGateway : public PollingComponent {
  private:
   std::vector<OpenThermListener *> listeners{std::vector<OpenThermListener *>()};
@@ -30,7 +32,6 @@ class OpenThermGateway : public PollingComponent {
   void set_temperature_setpoint_override(float temperature);
   void loop() override;
   void setup() override;
-  uint32_t send_request_to_thermostat(uint32_t request);
   uint32_t send_request_to_boiler(uint32_t request);
 
   uint32_t handle_t_set(uint32_t request);

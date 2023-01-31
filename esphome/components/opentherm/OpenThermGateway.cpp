@@ -82,8 +82,9 @@ uint32_t OpenThermGateway::handle_tr_override(uint32_t request) {
 }
 
 uint32_t OpenThermGateway::handle_status(uint32_t request) {
+	auto thermostat_hot_water_enabled = OpenTherm::isHotWaterActive(request);
+
   if (boiler_on_override) {
-    auto thermostat_hot_water_enabled = OpenTherm::isHotWaterActive(request);
     return to_boiler.setBoilerStatus(true, thermostat_hot_water_enabled);
   }
 
@@ -108,7 +109,6 @@ void OpenThermGateway::set_temperature_setpoint_override(float temperature) {
 void OpenThermGateway::loop() { to_thermostat.process(); }
 void OpenThermGateway::add_listener(OpenThermListener *listener) { listeners.push_back(listener); }
 
-uint32_t OpenThermGateway::send_request_to_thermostat(uint32_t request) { return to_thermostat.sendRequest(request); }
 
 uint32_t OpenThermGateway::send_request_to_boiler(uint32_t request) {
   uint32_t response = to_boiler.sendRequest(request);

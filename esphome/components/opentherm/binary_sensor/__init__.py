@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import binary_sensor
-from .. import opentherm_ns, OpenThermMaster
+from .. import opentherm_ns, OpenThermGateway
 
 CONF_OPENTHERM_BINARY_SENSOR_ID = "opentherm_id"
 CONF_OPENTHERM_BINARY_SENSOR_TYPE = "type"
@@ -13,11 +13,12 @@ OpenThermBinarySensorType = opentherm_ns.enum("OpenThermBinarySensorType")
 
 SENSOR_TYPES = {
     "flame_on": [OpenThermBinarySensorType.FLAME_ON],
+    "thermostat_heating_on": [OpenThermBinarySensorType.THERMOSTAT_HEATING_ON],
 }
 
 CONFIG_SCHEMA = binary_sensor.binary_sensor_schema(OpenThermBinarySensor).extend(
     {
-        cv.GenerateID(CONF_OPENTHERM_BINARY_SENSOR_ID): cv.use_id(OpenThermMaster),
+        cv.GenerateID(CONF_OPENTHERM_BINARY_SENSOR_ID): cv.use_id(OpenThermGateway),
         cv.Required(CONF_OPENTHERM_BINARY_SENSOR_TYPE): cv.enum(SENSOR_TYPES),
     }
 )
@@ -29,4 +30,4 @@ async def to_code(config):
     await cg.register_component(var, config)
 
     cg.add(var.set_sensor_type(config[CONF_OPENTHERM_BINARY_SENSOR_TYPE]))
-    cg.add(var.set_open_therm_master(parent))
+    cg.add(var.set_open_therm_gateway(parent))
