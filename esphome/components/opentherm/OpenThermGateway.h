@@ -13,7 +13,7 @@ class OpenThermGateway : public PollingComponent {
   time_t wait_override_reset = 0;
   bool override_active;
   bool boiler_on_override;
-  static const int OVERRIDE_BOILER_TEMPERATURE = 60;
+  constexpr static const float OVERRIDE_BOILER_TEMPERATURE = 60.0;
 
  public:
   void set_boiler_on_override(bool boiler_on_override);

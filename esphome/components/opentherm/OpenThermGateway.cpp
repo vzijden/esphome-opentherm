@@ -93,8 +93,9 @@ uint32_t OpenThermGateway::handle_status(uint32_t request) {
 }
 
 uint32_t OpenThermGateway::handle_t_set(uint32_t request) {
+  auto set_temperature = max(OpenTherm::getFloat(request), OVERRIDE_BOILER_TEMPERATURE);
   if (boiler_on_override) {
-    return to_boiler.sendRequest(OpenTherm::buildRequest(WRITE, TSet, OpenTherm::temperatureToData(OVERRIDE_BOILER_TEMPERATURE)));
+    return to_boiler.sendRequest(OpenTherm::buildRequest(WRITE, TSet, OpenTherm::temperatureToData(set_temperature)));
   }
 
   return to_boiler.sendRequest(request);

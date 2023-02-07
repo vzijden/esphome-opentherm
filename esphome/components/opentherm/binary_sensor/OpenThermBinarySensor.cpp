@@ -8,10 +8,12 @@ void OpenThermBinarySensor::dump_config() { ESP_LOGCONFIG("opentherm.sensor", "S
 void OpenThermBinarySensor::setup() { open_therm_gateway_->add_listener(this); }
 
 void OpenThermBinarySensor::on_response(uint32_t request, uint32_t response) {
-  if (sensor_type_ == FLAME_ON) {
-    publish_state(OpenTherm::isFlameOn(response));
-  } else if (sensor_type_ == THERMOSTAT_HEATING_ON) {
-    publish_state(OpenTherm::isCentralHeatingActive(request));
+  if (OpenTherm::getDataID(request) == Status) {
+    if (sensor_type_ == FLAME_ON) {
+      publish_state(OpenTherm::isFlameOn(response));
+    } else if (sensor_type_ == THERMOSTAT_HEATING_ON) {
+      publish_state(OpenTherm::isCentralHeatingActive(response));
+    }
   }
 }
 
