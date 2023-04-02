@@ -28,7 +28,7 @@ void OpenThermGateway::setup() {
   });
 }
 
-void OpenThermGateway::handle_thermostat_request(uint32_t request, OpenThermResponseStatus response_status) {
+void OpenThermGateway::handle_thermostat_request(unsigned long request, OpenThermResponseStatus response_status) {
   auto message_id = OpenTherm::getDataID(request);
   auto message_type = OpenTherm::getMessageType(request);
 
@@ -93,7 +93,7 @@ uint32_t OpenThermGateway::handle_status(uint32_t request) {
 }
 
 uint32_t OpenThermGateway::handle_t_set(uint32_t request) {
-  auto set_temperature = max(OpenTherm::getFloat(request), OVERRIDE_BOILER_TEMPERATURE);
+  auto set_temperature = max(OpenTherm::getFloat(request), target_water_temp);
   if (boiler_on_override) {
     return to_boiler.sendRequest(OpenTherm::buildRequest(WRITE, TSet, OpenTherm::temperatureToData(set_temperature)));
   }
@@ -123,5 +123,9 @@ uint32_t OpenThermGateway::send_request_to_boiler(uint32_t request) {
 
 void OpenThermGateway::set_boiler_on_override(bool boiler_on_override) {
   OpenThermGateway::boiler_on_override = boiler_on_override;
+}
+void OpenThermGateway::set_target_water_temp(float temp) {
+  ESP_LOGI(TAG, "Setting target water temp to %f", temp);
+  this->target_water_temp = temp;
 }
 }  // namespace esphome::opentherm

@@ -24,7 +24,7 @@ class OpenThermBinarySensor : public binary_sensor::BinarySensor, public Compone
   void setup() override;
 
  private:
-  void on_response(uint32_t request, uint32_t response) override;
+  void on_response(unsigned long request, unsigned long response) override;
 };
 
 }  // namespace esphome::opentherm

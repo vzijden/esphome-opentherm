@@ -31,7 +31,7 @@ class OpenThermClimate : public climate::Climate, public PollingComponent, OpenT
   void update() override;
 
  private:
-  void on_response(uint32_t request, uint32_t response) override;
+  void on_response(unsigned long request, unsigned long response) override;
 
  protected:
   void control(const climate::ClimateCall &call) override;

@@ -29,7 +29,7 @@ class OpenThermSensor : public sensor::Sensor, public PollingComponent, public O
     OpenThermSensor::open_therm_gateway_ = open_therm_gateway;
   }
   void update() override;
-  void on_response(uint32_t request, uint32_t response) override;
+  void on_response(unsigned long request, unsigned long response) override;
 };
 
 }  // namespace esphome::opentherm

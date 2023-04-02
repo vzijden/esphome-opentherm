@@ -15,7 +15,7 @@ void OpenThermSensor::update() {
 }
 OpenThermSensor::OpenThermSensor() : PollingComponent(30000) {}
 
-void OpenThermSensor::on_response(uint32_t request, uint32_t response) {
+void OpenThermSensor::on_response(unsigned long request, unsigned long response) {
   if (is_message_for_sensor_type(OpenTherm::getDataID(request), OpenTherm::getMessageType(response))) {
     publish_state(OpenTherm::getFloat(response));
   }

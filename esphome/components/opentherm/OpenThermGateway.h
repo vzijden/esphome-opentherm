@@ -13,7 +13,7 @@ class OpenThermGateway : public PollingComponent {
   time_t wait_override_reset = 0;
   bool override_active;
   bool boiler_on_override;
-  constexpr static const float OVERRIDE_BOILER_TEMPERATURE = 60.0;
+  float target_water_temp = 60;
 
  public:
   void set_boiler_on_override(bool boiler_on_override);
@@ -25,7 +25,7 @@ class OpenThermGateway : public PollingComponent {
   bool temperature_override_already_set;
   uint32_t handle_tr_override(uint32_t request);
   uint32_t handle_status(uint32_t request);
-  void handle_thermostat_request(uint32_t request, OpenThermResponseStatus response_status);
+  void handle_thermostat_request(unsigned long request, OpenThermResponseStatus response_status);
 
  public:
   void add_listener(OpenThermListener *listener);
@@ -35,5 +35,6 @@ class OpenThermGateway : public PollingComponent {
   uint32_t send_request_to_boiler(uint32_t request);
 
   uint32_t handle_t_set(uint32_t request);
+  void set_target_water_temp(float temp);
 };
 }  // namespace esphome::opentherm
