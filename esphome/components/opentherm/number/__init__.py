@@ -29,7 +29,7 @@ CONFIG_SCHEMA = number.NUMBER_SCHEMA.extend(
 
 async def to_code(config):
     parent = await cg.get_variable(config[CONF_OPENTHERM_INPUT_NUMBER_ID])
-    var = await number.new_number(config, min_value=60, max_value=90, step=1)
+    var = await number.new_number(config, min_value=40, max_value=90, step=1)
     await cg.register_component(var, config)
 
     cg.add(var.set_number_type(config[CONF_OPENTHERM_input_number_TYPE]))

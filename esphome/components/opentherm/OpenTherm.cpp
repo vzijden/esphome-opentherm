@@ -408,6 +408,11 @@ float OpenTherm::getPressure() {
 unsigned char OpenTherm::getFault() {
     return ((sendRequest(buildRequest(OpenThermRequestType::READ, OpenThermMessageID::ASFflags, 0)) >> 8) & 0xff);
 }
+
+bool OpenTherm::centralHeatingRequested(const unsigned long request) {
+    return request & 0x100;
+}
+
 const char *OpenTherm::messageIdToString(OpenThermMessageID message_id) {
     switch (message_id) {
         case Status: return "Status:"; // flag8 / flag8  Master and Slave Status flags.

@@ -15,7 +15,7 @@ void esphome::opentherm::OpenThermClimate::control(const esphome::climate::Clima
 }
 void esphome::opentherm::OpenThermClimate::on_response(unsigned long request, unsigned long response) {
   if (OpenTherm::getDataID(request) == Status) {
-    if (OpenTherm::isCentralHeatingActive(response)) {
+    if (OpenTherm::centralHeatingRequested(request)) {
       ESP_LOGI(TAG, "Intercepted status request, setting HEATING");
       this->action = climate::CLIMATE_ACTION_HEATING;
     } else {

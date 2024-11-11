@@ -142,6 +142,7 @@ public:
     static unsigned long buildSetBoilerStatusRequest(bool enableCentralHeating, bool enableHotWater = false, bool enableCooling = false, bool enableOutsideTemperatureCompensation = false, bool enableCentralHeating2 = false);
     unsigned long buildSetBoilerTemperatureRequest(float temperature);
     unsigned long buildGetBoilerTemperatureRequest();
+    static bool centralHeatingRequested(const unsigned long request);
 
     //responses
     bool isFault(unsigned long response);
