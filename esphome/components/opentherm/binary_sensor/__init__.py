@@ -14,6 +14,7 @@ OpenThermBinarySensorType = opentherm_ns.enum("OpenThermBinarySensorType")
 SENSOR_TYPES = {
     "flame_on": [OpenThermBinarySensorType.FLAME_ON],
     "thermostat_heating_on": [OpenThermBinarySensorType.THERMOSTAT_HEATING_ON],
+    "hot_water_on": [OpenThermBinarySensorType.HOT_WATER_ON],
 }
 
 CONFIG_SCHEMA = binary_sensor.binary_sensor_schema(OpenThermBinarySensor).extend(

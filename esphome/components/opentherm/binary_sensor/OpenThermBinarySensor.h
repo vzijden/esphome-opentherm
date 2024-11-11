@@ -5,7 +5,7 @@
 #include "esphome/components/opentherm/OpenThermGateway.h"
 namespace esphome::opentherm {
 
-enum OpenThermBinarySensorType { FLAME_ON, THERMOSTAT_HEATING_ON };
+enum OpenThermBinarySensorType { FLAME_ON, THERMOSTAT_HEATING_ON, HOT_WATER_ON };
 
 class OpenThermBinarySensor : public binary_sensor::BinarySensor, public Component, public OpenThermListener {
  public:

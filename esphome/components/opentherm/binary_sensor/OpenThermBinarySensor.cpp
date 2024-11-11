@@ -13,6 +13,8 @@ void OpenThermBinarySensor::on_response(unsigned long request, unsigned long res
       publish_state(OpenTherm::isFlameOn(response));
     } else if (sensor_type_ == THERMOSTAT_HEATING_ON) {
       publish_state(OpenTherm::centralHeatingRequested(request));
+    } else if (sensor_type_ == HOT_WATER_ON) {
+      publish_state(OpenTherm::isHotWaterActive(response));
     }
   }
 }

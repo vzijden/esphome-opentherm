@@ -7,7 +7,7 @@ esphome:
 wifi:
   ssid: Wifi
   password: TollieBollie!@
-  domain: .lan
+  domain: .local
 
 logger:
   baud_rate: 9600
@@ -70,6 +70,10 @@ binary_sensor:
     opentherm_id: thermostat
     type: thermostat_heating_on
     name: Thermostat heating active
+  - platform: opentherm
+    opentherm_id: thermostat
+    type: hot_water_on
+    name: Thermostat hot water on
 
 number:
   - platform: opentherm
